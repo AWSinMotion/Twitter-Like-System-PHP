@@ -1,6 +1,6 @@
 <?php
 // error_reporting (E_All^E_Notice);
-session_start();
+include 'session.php';
 $user_id = $_SESSION['user_id'];
 ?>
 <!DOCTYPE html>
