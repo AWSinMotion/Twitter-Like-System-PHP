@@ -17,32 +17,41 @@ class Session {
   }
 
   public function session_close(){
-    if(mysql_close($this->conn)){
+    if($this->conn && mysql_close($this->conn)){
       return true;
     }
     return false;
   }
 
   public function session_read($id){
-    $query = mysql_query("SELECT data FROM sessions WHERE id='$id'", $this->conn);
-    $row = mysql_fetch_assoc($query);
-    return $row['data'];
+    if($this->conn){
+      $query = mysql_query("SELECT data FROM sessions WHERE id='$id'", $this->conn);
+      $row = mysql_fetch_assoc($query);
+      return $row['data'];
+    }
+    return NULL;
   }
 
   public function session_write($id, $data){
-    $access = time();
-    mysql_query("REPLACE INTO sessions VALUES ('$id', '$access', '$data')", $this->conn);
+    if($this->conn){
+      $access = time();
+      mysql_query("REPLACE INTO sessions VALUES ('$id', '$access', '$data')", $this->conn);
+    }
     return true;
   }
 
   public function session_destroy($id){
-    mysql_query("DELETE FROM sessions WHERE id = '$id'", $this->conn);
+    if($this->conn){
+      mysql_query("DELETE FROM sessions WHERE id = '$id'", $this->conn);
+    }
     return true;
   } 
 
   public function session_gc($max){
-    $old = time() - $max;
-    mysql_query("DELETE FROM sessions WHERE access < '$old'", $this->conn);
+    if($this->conn){
+      $old = time() - $max;
+      mysql_query("DELETE FROM sessions WHERE access < '$old'", $this->conn);
+    }
     return true;
   }
  
